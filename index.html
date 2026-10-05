@@ -214,5 +214,21 @@ function toast(m,s){const err=s==='err';const t=document.createElement('div');t.
 window.go=go;window.undo=undo;
 seed();render();
 </script>
+<script>
+// Feature: maand-grafiek brandstof vs overige kosten (#2)
+(function(){
+  const c=calc();
+  const wrap=document.createElement('div');
+  wrap.style.cssText='max-width:460px;width:100%;margin:12px auto 0;background:rgba(255,255,255,.72);backdrop-filter:blur(14px);border-radius:16px;padding:16px;border:1px solid #d9dee6';
+  const max=Math.max(c.fuel,c.other,1);
+  wrap.innerHTML='<div style="font-weight:800;font-size:14px;margin-bottom:12px">📊 Kosten deze maand</div>'+
+    '<div style="display:flex;align-items:flex-end;gap:24px;height:120px">'+
+    '<div style="flex:1;text-align:center"><div style="height:'+(c.fuel/max*100)+'px;background:#ea580c;border-radius:8px 8px 0 0"></div><div style="font-size:12px;margin-top:6px;color:#5b6472">Brandstof €'+c.fuel.toFixed(0)+'</div></div>'+
+    '<div style="flex:1;text-align:center"><div style="height:'+(c.other/max*100)+'px;background:#9333ea;border-radius:8px 8px 0 0"></div><div style="font-size:12px;margin-top:6px;color:#5b6472">Overige €'+c.other.toFixed(0)+'</div></div>'+
+    '</div>';
+  document.querySelector('.app').after(wrap);
+})();
+</script>
+
 </body>
 </html>
