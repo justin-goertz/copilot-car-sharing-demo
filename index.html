@@ -214,5 +214,24 @@ function toast(m,s){const err=s==='err';const t=document.createElement('div');t.
 window.go=go;window.undo=undo;
 seed();render();
 </script>
+<script>
+// Feature: CSV-export van de afrekening (#1)
+(function(){
+  function toCsv(){
+    const c=calc();
+    const rows=[['type','persoon','km','bedrag','omschrijving']];
+    entries.forEach(e=>rows.push([e.type,e.user,e.km||'',e.amount!=null?e.amount.toFixed(2):'',e.desc||'']));
+    const settle = typeof c.s==='string' ? ['even','','0.00'] : [c.s[0]+'->'+c.s[1],'',c.s[2].toFixed(2)];
+    rows.push([]); rows.push(['afrekening',settle[0],'',settle[2],'']);
+    return rows.map(r=>r.map(x=>'"'+(''+x).replace(/"/g,'""')+'"').join(',')).join('\n');
+  }
+  const btn=document.createElement('button');
+  btn.textContent='⬇ Exporteer CSV'; btn.className='btn';
+  btn.style.cssText='max-width:460px;width:100%;margin:12px auto 0;display:block';
+  btn.onclick=function(){const blob=new Blob([toCsv()],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='afrekening.csv';a.click();};
+  document.querySelector('.app').after(btn);
+})();
+</script>
+
 </body>
 </html>
