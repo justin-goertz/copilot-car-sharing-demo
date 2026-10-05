@@ -214,5 +214,28 @@ function toast(m,s){const err=s==='err';const t=document.createElement('div');t.
 window.go=go;window.undo=undo;
 seed();render();
 </script>
+<script>
+// Feature: agenda om te plannen wie de auto gebruikt (#3)
+(function(){
+  const wrap=document.createElement('div');
+  wrap.style.cssText='max-width:460px;width:100%;margin:12px auto 0;background:rgba(255,255,255,.72);backdrop-filter:blur(14px);border-radius:16px;padding:16px;border:1px solid #d9dee6';
+  let who='justin'; const plan={};
+  function draw(){
+    let days='';
+    for(let d=1;d<=14;d++){const k='d'+d;const u=plan[k];days+='<button data-d="'+k+'" style="aspect-ratio:1;border:1px solid #d9dee6;border-radius:10px;background:'+(u?(u==="justin"?"#2563eb":"#16a34a"):"#fff")+';color:'+(u?"#fff":"#1f2328")+';font-weight:700;cursor:pointer">'+d+'</button>';}
+    wrap.innerHTML='<div style="font-weight:800;font-size:14px;margin-bottom:10px">📅 Agenda — wie rijdt?</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'+
+      '<button id="pj" style="height:40px;border-radius:10px;border:1.5px solid '+(who==="justin"?"#2563eb":"#d9dee6")+';background:#fff;font-weight:700;cursor:pointer;color:#2563eb">Justin</button>'+
+      '<button id="pm" style="height:40px;border-radius:10px;border:1.5px solid '+(who==="milan"?"#16a34a":"#d9dee6")+';background:#fff;font-weight:700;cursor:pointer;color:#16a34a">Milan</button></div>'+
+      '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">'+days+'</div>';
+    wrap.querySelector('#pj').onclick=()=>{who='justin';draw();};
+    wrap.querySelector('#pm').onclick=()=>{who='milan';draw();};
+    wrap.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{plan[b.dataset.d]=plan[b.dataset.d]===who?null:who;draw();});
+  }
+  draw();
+  document.querySelector('.app').after(wrap);
+})();
+</script>
+
 </body>
 </html>
