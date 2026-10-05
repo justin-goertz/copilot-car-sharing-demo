@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Sharing Cost Splitter — Justin &amp; Milan</title>
+<style>
+  :root{
+    --ink:#1f2328;--bg:#eef2f8;--card:#fff;--bord:#d9dee6;--muted:#5b6472;
+    --primary:#1f3a8a;--justin:#2563eb;--milan:#16a34a;--accent:#ea580c;
+    --green:#16a34a;--red:#dc2626;--soft:#f6f8fc;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;
+    background:radial-gradient(900px 500px at 15% -10%,rgba(37,99,235,.12),transparent),
+      radial-gradient(800px 500px at 95% 110%,rgba(22,163,74,.1),transparent),var(--bg);
+    color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:28px 14px 60px}
+  .intro{max-width:460px;text-align:center;margin-bottom:16px}
+  .intro h1{font-size:22px;font-weight:800}
+  .intro p{font-size:13.5px;color:var(--muted);margin-top:4px}
+  .app{width:100%;max-width:460px;background:linear-gradient(170deg,#fafbff,#f0f3f9);
+    border:1px solid rgba(255,255,255,.7);border-radius:26px;overflow:hidden;
+    box-shadow:0 30px 70px rgba(20,30,60,.22)}
+  .glass{background:rgba(255,255,255,.72);backdrop-filter:blur(14px)}
+  .hdr{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.6);display:flex;align-items:center;gap:13px}
+  .logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#111827,#334155);display:flex;align-items:center;justify-content:center;font-size:22px}
+  .hdr h2{font-size:19px;font-weight:800}
+  .hdr .sub{font-size:12.5px;color:var(--muted);font-weight:600}
+  main{padding:16px}
+  .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:rgba(255,255,255,.6);padding:5px;border-radius:14px;margin-bottom:16px}
+  .tab{padding:10px;border:none;background:transparent;border-radius:10px;font-weight:700;font-size:13.5px;color:var(--muted);cursor:pointer}
+  .tab.on{background:var(--primary);color:#fff}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .bcard{border-radius:16px;padding:16px}
+  .bcard .who{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:700;font-size:14px}
+  .bcard .who .d{width:10px;height:10px;border-radius:50%}
+  .bcard .bal{font-size:26px;font-weight:800;letter-spacing:-.02em}
+  .bcard .km{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+  .pos{color:var(--green)}.neg{color:var(--red)}
+  .totrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+  .tot{text-align:center;padding:11px 4px;border-radius:12px}
+  .tot b{display:block;font-size:17px;font-weight:800}.tot span{font-size:11px;color:var(--muted);font-weight:700}
+  .card{border-radius:16px;padding:16px;margin-top:14px}
+  .card h3{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .opt{display:flex;align-items:center;justify-content:center;gap:8px;height:42px;border-radius:11px;border:1.5px solid var(--bord);background:#fff;font-weight:700;font-size:13.5px;cursor:pointer}
+  .opt .d{width:11px;height:11px;border-radius:50%}
+  .opt.on{border-color:currentColor;box-shadow:0 0 0 2px rgba(0,0,0,.03)}
+  .opt.justin.on{color:var(--justin)}.opt.milan.on{color:var(--milan)}
+  .itabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;background:var(--soft);padding:5px;border-radius:12px;margin-bottom:12px}
+  .itab{padding:9px;border:none;background:transparent;border-radius:9px;font-weight:800;font-size:13px;color:var(--muted);cursor:pointer}
+  .itab.on{background:var(--primary);color:#fff}
+  label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:#374151}
+  input{width:100%;height:44px;border:1px solid var(--bord);border-radius:11px;padding:0 13px;font-size:14px;outline:none;background:#fff}
+  input:focus{border-color:var(--justin);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .hint{font-size:11.5px;color:var(--muted);margin:-4px 0 10px}
+  .btn{width:100%;height:46px;border:none;border-radius:12px;background:var(--primary);color:#fff;font-size:14.5px;font-weight:800;cursor:pointer;margin-top:4px}
+  .btn.green{background:var(--milan)}
+  .settle{border-radius:16px;padding:20px;text-align:center;margin-bottom:12px}
+  .settle .l{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+  .settle .amt{font-size:32px;font-weight:800;margin:6px 0 2px}
+  .settle .dir{font-size:14px;font-weight:700}
+  .brk{border-radius:14px;overflow:hidden}
+  .brow{display:flex;padding:11px 15px;font-size:13px;border-bottom:1px solid var(--bord)}
+  .brow:last-child{border-bottom:none}.brow .nm{color:var(--muted)}.brow .vl{margin-left:auto;font-weight:800}
+  .hitem{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:12px;margin-bottom:8px}
+  .hitem .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px}
+  .hitem .t{font-size:13.5px;font-weight:700}.hitem .s{font-size:11.5px;color:var(--muted)}
+  .hitem .del{margin-left:auto;border:1px solid var(--bord);background:#fff;border-radius:9px;width:32px;height:32px;cursor:pointer}
+  .empty{text-align:center;color:var(--muted);font-size:13px;padding:34px 10px}
+  .foot{max-width:460px;text-align:center;font-size:11px;color:var(--muted);margin-top:14px}
+  #toasts{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;flex-direction:column;gap:8px;align-items:center}
+  .toast{background:#fff;border:1px solid var(--bord);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:11px 15px;font-size:13px;font-weight:600;min-width:220px;display:flex;gap:9px;align-items:center}
+  .toast .ti{width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+  .toast.err .ti{background:var(--red)}
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>Car Sharing Cost Splitter</h1>
+    <p>Eerlijke autokosten delen tussen twee mensen — brandstof naar rato van gereden km, overige kosten 50/50.</p>
+  </div>
+
+  <div class="app">
+    <div class="hdr glass">
+      <div class="logo">🚗</div>
+      <div><h2>Justin &amp; Milan</h2><div class="sub">gedeelde auto · kostenverdeler</div></div>
+    </div>
+    <main>
+      <div class="tabs">
+        <button class="tab on" data-tab="overview" onclick="go('overview')">Overzicht</button>
+        <button class="tab" data-tab="settle" onclick="go('settle')">Afrekening</button>
+        <button class="tab" data-tab="history" onclick="go('history')">Historie</button>
+      </div>
+      <div id="view"></div>
+    </main>
+  </div>
+  <div class="foot">Open dit bestand in je browser — geen installatie nodig. Data staat in het geheugen van deze sessie.</div>
+  <div id="toasts"></div>
+
+<script>
+const C={justin:'var(--justin)',milan:'var(--milan)'};
+let entries=[], view='overview', itab='trip', tripUser='justin', fuelUser='justin', costUser='justin';
+
+function seed(){
+  const b=Date.now()-8000;
+  entries=[
+    {id:'1',type:'trip',user:'justin',t:b+1,km:123000},
+    {id:'2',type:'trip',user:'milan', t:b+2,km:123250},
+    {id:'3',type:'trip',user:'justin',t:b+3,km:123600},
+    {id:'4',type:'trip',user:'milan', t:b+4,km:123900},
+    {id:'5',type:'fuel',user:'justin',t:b+5,amount:80},
+    {id:'6',type:'fuel',user:'milan', t:b+6,amount:70},
+    {id:'7',type:'cost',user:'justin',t:b+7,amount:20,desc:'Wasstraat'},
+    {id:'8',type:'cost',user:'milan', t:b+8,amount:40,desc:'Onderhoud'},
+  ];
+}
+function calc(){
+  let fuel=0,other=0,jp=0,mp=0;
+  entries.forEach(e=>{
+    if(e.type==='fuel'&&e.amount){fuel+=e.amount;e.user==='justin'?jp+=e.amount:mp+=e.amount;}
+    else if(e.type==='cost'&&e.amount){other+=e.amount;e.user==='justin'?jp+=e.amount:mp+=e.amount;}
+  });
+  const trips=entries.filter(e=>e.type==='trip').sort((a,b)=>a.t-b.t);
+  let tot=0,jk=0,mk=0;
+  if(trips.length>=2){
+    tot=Math.max(0,(trips[trips.length-1].km||0)-(trips[0].km||0));
+    for(let i=0;i<trips.length-1;i++){const d=Math.max(0,(trips[i+1].km||0)-(trips[i].km||0));if(d>0){trips[i+1].user==='justin'?jk+=d:mk+=d;}}
+  }
+  const epk=tot>0?fuel/tot:0, op=other/2;
+  const jb=jp-(jk*epk+op), mb=mp-(mk*epk+op);
+  let s='Even';
+  if(Math.abs(jb)>0.01)s=jb<0?['justin','milan',Math.abs(jb)]:['milan','justin',Math.abs(jb)];
+  return {fuel,other,tot,jk,mk,jb,mb,epk,s};
+}
+function lastKm(){const t=entries.filter(e=>e.type==='trip').sort((a,b)=>b.t-a.t);return t[0]?.km||0;}
+function fmtKm(v,last){if(last===0)return parseInt(v)||0;if(v.length<=3){const n=parseInt(v)||0,base=Math.floor(last/1000)*1000;let k=base+n;if(k<=last)k=base+1000+n;return k;}const f=parseInt(v)||0;return f>last?f:last+1;}
+const eur=n=>'€'+n.toFixed(2), km=n=>n.toLocaleString('nl-NL'), cap=s=>s[0].toUpperCase()+s.slice(1);
+function parseAmt(v){if(!v)return 0;return parseFloat((''+v).replace(',','.').replace(/[^0-9.]/g,''))||0;}
+
+const V=document.getElementById('view');
+function go(t){view=t;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));render();}
+function render(){V.innerHTML=view==='overview'?overview():view==='settle'?settle():history();if(view==='overview')bind();}
+
+function overview(){
+  const c=calc(), cls=b=>b>0.01?'pos':b<-0.01?'neg':'', sg=b=>b>=0?'+':'';
+  const n=t=>entries.filter(e=>e.type===t).length;
+  return `<div class="row2">
+    <div class="bcard glass"><div class="who"><span class="d" style="background:${C.justin}"></span>Justin</div><div class="bal ${cls(c.jb)}">${sg(c.jb)}${eur(c.jb)}</div><div class="km">${km(c.jk)} km</div></div>
+    <div class="bcard glass"><div class="who"><span class="d" style="background:${C.milan}"></span>Milan</div><div class="bal ${cls(c.mb)}">${sg(c.mb)}${eur(c.mb)}</div><div class="km">${km(c.mk)} km</div></div>
+  </div>
+  <div class="totrow">
+    <div class="tot glass"><b>${c.tot.toLocaleString('nl-NL')}</b><span>totaal km</span></div>
+    <div class="tot glass"><b>€${c.fuel.toFixed(0)}</b><span>brandstof</span></div>
+    <div class="tot glass"><b>€${(c.fuel+c.other).toFixed(0)}</b><span>totaal</span></div>
+  </div>
+  <div class="card glass">
+    <h3>➕ Toevoegen</h3>
+    <div class="itabs">
+      <button class="itab ${itab==='trip'?'on':''}" data-i="trip">🚗 Rit</button>
+      <button class="itab ${itab==='fuel'?'on':''}" data-i="fuel">⛽ Tank</button>
+      <button class="itab ${itab==='cost'?'on':''}" data-i="cost">🔧 Kosten</button>
+    </div>
+    <div id="pane">${pane()}</div>
+  </div>`;
+}
+function useropt(sel,name){return `<div class="seg" data-seg="${name}">
+  <div class="opt justin ${sel==='justin'?'on':''}" data-u="justin"><span class="d" style="background:${C.justin}"></span>Justin</div>
+  <div class="opt milan ${sel==='milan'?'on':''}" data-u="milan"><span class="d" style="background:${C.milan}"></span>Milan</div></div>`;}
+function pane(){
+  const last=lastKm();
+  if(itab==='trip')return `<label>Gebruiker</label>${useropt(tripUser,'trip')}
+    <label>Kilometerstand</label><input id="tk" inputmode="numeric" placeholder="${last>0?'laatste 3 cijfers':'volledige stand'}">
+    <div class="hint">${last>0?`Laatste stand: ${km(last)} km — voer de laatste 3 cijfers in.`:'Eerste invoer: volledige kilometerstand.'}</div>
+    <button class="btn" id="addT">Rit toevoegen</button>`;
+  if(itab==='fuel')return `<label>Wie tankte?</label>${useropt(fuelUser,'fuel')}
+    <label>Bedrag (€)</label><input id="fa" inputmode="decimal" placeholder="bijv. 65,00">
+    <button class="btn green" id="addF">Tankbeurt toevoegen</button>`;
+  return `<label>Wie betaalde?</label>${useropt(costUser,'cost')}
+    <label>Bedrag (€)</label><input id="ca" inputmode="decimal" placeholder="bijv. 30,00">
+    <label>Omschrijving</label><input id="cd" placeholder="bijv. Onderhoud">
+    <button class="btn" id="addC">Kosten toevoegen (50/50)</button>`;
+}
+function bind(){
+  document.querySelectorAll('.itab').forEach(b=>b.onclick=()=>{itab=b.dataset.i;document.getElementById('pane').innerHTML=pane();bind();});
+  document.querySelectorAll('[data-seg] .opt').forEach(o=>o.onclick=()=>{const s=o.closest('[data-seg]').dataset.seg,u=o.dataset.u;if(s==='trip')tripUser=u;if(s==='fuel')fuelUser=u;if(s==='cost')costUser=u;o.parentElement.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x===o));});
+  const t=document.getElementById('addT');if(t)t.onclick=()=>{const el=document.getElementById('tk'),v=(el.value||'').trim();if(!v)return toast('Voer een kilometerstand in','err');const last=lastKm(),k=fmtKm(v,last);if(k<=last)return toast('KM mag niet dalen','err');entries.push({id:Date.now()+'',type:'trip',user:tripUser,t:Date.now(),km:k});toast('Rit toegevoegd',cap(tripUser)+' — '+km(k)+' km');render();};
+  const f=document.getElementById('addF');if(f)f.onclick=()=>{const a=parseAmt(document.getElementById('fa').value);if(!(a>0))return toast('Ongeldig bedrag','err');entries.push({id:Date.now()+'',type:'fuel',user:fuelUser,t:Date.now(),amount:a});toast('Tankbeurt toegevoegd',cap(fuelUser)+' — '+eur(a));render();};
+  const c=document.getElementById('addC');if(c)c.onclick=()=>{const a=parseAmt(document.getElementById('ca').value),d=(document.getElementById('cd').value||'').trim();if(!(a>0))return toast('Ongeldig bedrag','err');if(!d)return toast('Voer een omschrijving in','err');entries.push({id:Date.now()+'',type:'cost',user:costUser,t:Date.now(),amount:a,desc:d});toast('Kosten toegevoegd',cap(costUser)+' — '+eur(a));render();};
+}
+function settle(){
+  const c=calc(),s=c.s,op=c.other/2;
+  let dir,amt;if(s==='Even'){dir='Alles is verrekend';amt='€0,00';}else{dir=cap(s[0])+' → '+cap(s[1]);amt=eur(s[2]);}
+  return `<div class="settle glass"><div class="l">Te verrekenen</div><div class="amt" style="color:${s==='Even'?'var(--green)':'var(--primary)'}">${amt}</div><div class="dir">${dir}</div></div>
+  <div class="brk glass">
+    <div class="brow"><span class="nm">Totaal brandstof</span><span class="vl">${eur(c.fuel)}</span></div>
+    <div class="brow"><span class="nm">Prijs per km</span><span class="vl">${eur(c.epk)}</span></div>
+    <div class="brow"><span class="nm">Justin · ${km(c.jk)} km brandstof</span><span class="vl">${eur(c.jk*c.epk)}</span></div>
+    <div class="brow"><span class="nm">Milan · ${km(c.mk)} km brandstof</span><span class="vl">${eur(c.mk*c.epk)}</span></div>
+    <div class="brow"><span class="nm">Overige kosten (50/50)</span><span class="vl">${eur(op)} p.p.</span></div>
+  </div>`;
+}
+function history(){
+  const it=[...entries].sort((a,b)=>b.t-a.t);
+  if(!it.length)return `<div class="empty">Nog geen invoer.</div>`;
+  const line=e=>e.type==='trip'?'Rit · '+cap(e.user):e.type==='fuel'?'Tank · '+cap(e.user):'Kosten · '+cap(e.user);
+  const sub=e=>e.type==='trip'?km(e.km)+' km':e.type==='fuel'?eur(e.amount):eur(e.amount)+' — '+e.desc;
+  const bg=e=>e.type==='trip'?C[e.user]:e.type==='fuel'?'var(--accent)':'#9333ea';
+  const ic=e=>e.type==='trip'?'🚗':e.type==='fuel'?'⛽':'🔧';
+  return it.map(e=>`<div class="hitem glass"><div class="ic" style="background:${bg(e)}">${ic(e)}</div><div><div class="t">${line(e)}</div><div class="s">${sub(e)}</div></div><button class="del" onclick="undo('${e.id}')">✕</button></div>`).join('');
+}
+function undo(id){entries=entries.filter(e=>e.id!==id);toast('Verwijderd');render();}
+function toast(m,s){const err=s==='err';const t=document.createElement('div');t.className='toast'+(err?' err':'');t.innerHTML=`<span class="ti">${err?'!':'✓'}</span><div>${m}${s&&s!=='err'?`<div style="color:var(--muted);font-weight:600;font-size:11.5px">${s}</div>`:''}</div>`;document.getElementById('toasts').appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='.3s';setTimeout(()=>t.remove(),320);},2400);}
+window.go=go;window.undo=undo;
+seed();render();
+</script>
+</body>
+</html>
