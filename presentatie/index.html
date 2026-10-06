@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Copilot app, HydraFusion &amp; Universe 2026</title>
+<style>
+  :root{--ink:#1f2328;--dark:#0d1117;--panel:#161b22;--purple:#8250df;--blue:#0969da;--green:#2da44e;--grey:#656d76;--soft:#f6f8fa;--bord:#d0d7de;--dbord:#30363d;--mut:#c9d1d9}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#05070a;color:var(--ink);overflow:hidden}
+  .stage{position:relative;height:100vh;width:100vw}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:7vh 7vw;background:#fff;animation:fade .4s ease;overflow:hidden}
+  .slide.on{display:flex}
+  .slide.dark{background:var(--dark);color:#fff}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .kick{display:inline-flex;align-items:center;gap:9px;font-size:1vw;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--purple);margin-bottom:.4vh}
+  .kick::before{content:"";width:24px;height:5px;border-radius:3px;background:currentColor}
+  h1{font-size:3.9vw;line-height:1.06;letter-spacing:-.02em;font-weight:800;margin:1.4vh 0}
+  h2{font-size:2.7vw;line-height:1.14;font-weight:800;margin:.8vh 0 1.4vh}
+  .lead{font-size:1.45vw;color:var(--grey);max-width:60ch;line-height:1.5}.dark .lead{color:var(--mut)}
+  .src{position:absolute;left:7vw;right:7vw;bottom:2.2vh;font-size:.78vw;color:var(--grey)}.dark .src{color:#6e7681}
+  .sec-n{font-size:2.4vw;font-weight:800}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:3.2vw;align-items:center;flex:1}
+  .split.wide-r{grid-template-columns:.9fr 1.1fr}
+  .split.wide-l{grid-template-columns:1.1fr .9fr}
+  .shot{border-radius:14px;overflow:hidden;border:1px solid var(--bord);box-shadow:0 24px 60px rgba(20,30,60,.3);background:#0d1117}
+  .dark .shot{border-color:var(--dbord)}
+  .shot .bar{display:flex;gap:6px;padding:9px 12px;background:#161b22;border-bottom:1px solid var(--dbord)}
+  .shot .bar i{width:11px;height:11px;border-radius:50%;display:block}
+  .shot .bar .r{background:#ff5f56}.shot .bar .y{background:#ffbd2e}.shot .bar .g{background:#27c93f}
+  .shot img,.imgcard img{display:block;width:100%}
+  .imgcard{border-radius:14px;overflow:hidden;border:1px solid var(--bord);box-shadow:0 20px 50px rgba(20,30,60,.25)}
+  .cap{font-size:.82vw;color:var(--grey);margin-top:.7vh}.dark .cap{color:#6e7681}
+
+  /* FIXED bullet lists: absolute bullet, natural text flow */
+  ul.feat{list-style:none;display:flex;flex-direction:column;gap:1.5vh;margin-top:1.4vh}
+  ul.feat li{position:relative;padding-left:1.7vw;font-size:1.4vw;line-height:1.45}
+  ul.feat li::before{content:"";position:absolute;left:0;top:.62em;width:.7vw;height:.7vw;border-radius:50%;background:var(--purple)}
+  .dark ul.feat li{color:#e6edf3}
+  ul.feat li b{font-weight:800}
+
+  .caps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3vw;margin-top:1.8vh}
+  .capc{background:var(--soft);border:1px solid var(--bord);border-radius:14px;padding:1.6vw}
+  .capc .e{font-size:1.9vw}.capc h3{font-size:1.3vw;margin:.5vh 0 .4vh}.capc p{font-size:1vw;color:var(--grey);line-height:1.4}
+  /* agenda cards with image */
+  .agc{background:var(--soft);border:1px solid var(--bord);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(20,30,60,.08)}
+  .agc .im{height:12vw;overflow:hidden;background:#0d1117}
+  .agc .im img{width:100%;height:100%;object-fit:cover;display:block}
+  .agc .bd{padding:1.3vw}
+  .agc .n{font-size:.82vw;font-weight:800;color:var(--purple);letter-spacing:.06em}
+  .agc h3{font-size:1.3vw;margin:.3vh 0 .5vh}
+  .agc p{font-size:1vw;color:var(--grey);line-height:1.4}
+  /* icon tiles (clean SVG instead of emoji) */
+  .capc .ic,.audc .ic{display:flex;align-items:center;justify-content:center;border-radius:.7vw}
+  .capc .ic{width:2.7vw;height:2.7vw;margin-bottom:1vh}
+  .audc .ic{width:2.3vw;height:2.3vw;margin-bottom:.8vh}
+  .capc .ic svg{width:1.5vw;height:1.5vw;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .audc .ic svg{width:1.25vw;height:1.25vw;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  /* adoption phases ladder */
+  .phases{display:grid;grid-template-columns:repeat(5,1fr);gap:.9vw;margin-top:2.4vh;align-items:stretch}
+  .ph{background:var(--soft);border:1px solid var(--bord);border-radius:13px;padding:1.1vw;position:relative;display:flex;flex-direction:column;gap:.5vh}
+  .ph .num{width:1.9vw;height:1.9vw;border-radius:50%;background:#fff;border:2px solid var(--bord);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9vw;color:var(--grey)}
+  .ph h4{font-size:1.02vw;margin-top:.4vh;line-height:1.2}
+  .ph p{font-size:.82vw;color:var(--grey);line-height:1.35}
+  .ph.hot{background:linear-gradient(180deg,#faf6ff,#fff);border-color:var(--purple);box-shadow:0 14px 34px rgba(130,80,223,.2)}
+  .ph.hot .num{background:var(--purple);border-color:var(--purple);color:#fff}
+  .ph.hot h4{color:var(--purple)}
+  .ph .tag{position:absolute;top:-1vw;left:50%;transform:translateX(-50%);background:var(--purple);color:#fff;font-size:.68vw;font-weight:800;padding:.25vw .7vw;border-radius:999px;white-space:nowrap}
+  .callout{margin-top:2.4vh;background:linear-gradient(90deg,rgba(130,80,223,.1),rgba(9,105,218,.06));border:1px solid #e3d5ff;border-radius:12px;padding:1.2vw 1.4vw;font-size:1.25vw;line-height:1.4}
+  .callout b{color:var(--purple)}
+  /* impact dashboard */
+  .dash{display:grid;grid-template-columns:repeat(4,1fr);gap:1vw;margin-top:1.6vh}
+  .mcard{background:var(--soft);border:1px solid var(--bord);border-radius:13px;padding:1.2vw}
+  .mcard .n{font-size:2.1vw;font-weight:800;line-height:1}
+  .mcard .l{font-size:.85vw;color:var(--grey);margin-top:.5vh}
+  .mcard .up{font-size:.78vw;color:var(--green);font-weight:800;margin-top:.4vh}
+  .trendbox{margin-top:1.3vw;background:var(--soft);border:1px solid var(--bord);border-radius:13px;padding:1.2vw}
+  .trendbox .th{font-size:.9vw;font-weight:700;color:var(--grey);margin-bottom:1vh}
+  .trend{display:flex;align-items:flex-end;gap:.6vw;height:9vh}
+  .trend i{flex:1;background:linear-gradient(180deg,#a371f7,#8250df);border-radius:4px 4px 0 0}
+  /* impact KPIs + cohort bars (Copilot Impact style) */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1vw;margin-top:1.8vh}
+  .kpi2{background:var(--soft);border:1px solid var(--bord);border-left-width:5px;border-radius:12px;padding:1vw 1.1vw}
+  .kpi2 .n{font-size:1.9vw;font-weight:800;line-height:1}
+  .kpi2 .l{font-size:.76vw;color:var(--grey);margin-top:.5vh;line-height:1.3}
+  .cohorts{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4vw;margin-top:2.6vh;align-items:end}
+  .cohort{text-align:center}
+  .cohort .barwrap{height:15vh;display:flex;align-items:flex-end;justify-content:center}
+  .cohort .bar2{width:3.4vw;border-radius:8px 8px 0 0;position:relative;min-height:.6vh}
+  .cohort .bar2 .v{position:absolute;top:-2.5vh;left:50%;transform:translateX(-50%);font-weight:800;font-size:1.3vw;white-space:nowrap;color:var(--ink)}
+  .cohort .nm{font-weight:800;font-size:.95vw;margin-top:1vh}
+  .cohort .ds{font-size:.76vw;color:var(--grey);line-height:1.3;margin-top:.2vh}
+
+  .aud{display:grid;grid-template-columns:1fr 1fr;gap:1.6vw;margin-top:1.4vh}
+  .audc{border-radius:16px;padding:1.9vw;border:1px solid var(--bord)}
+  .audc.dev{background:linear-gradient(180deg,#faf8ff,#fff);border-color:#e3d5ff}
+  .audc.biz{background:linear-gradient(180deg,#f3f9ff,#fff);border-color:#cfe4ff}
+  .audc .w{font-size:.95vw;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+  .audc h3{font-size:1.45vw;margin:.4vh 0 1vh}
+  .audc ul{list-style:none;display:flex;flex-direction:column;gap:1.1vh}
+  .audc ul li{position:relative;padding-left:1.5vw;font-size:1.12vw;line-height:1.4}
+  .audc ul li::before{content:"";position:absolute;left:0;top:.6em;width:.62vw;height:.62vw;border-radius:50%}
+  .audc.dev li::before{background:var(--purple)}.audc.biz li::before{background:var(--blue)}
+  .quote{margin-top:1.6vh;font-size:1.2vw;font-style:italic;color:var(--grey);border-left:4px solid var(--purple);padding-left:1.2vw;line-height:1.45}
+
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3vw;margin-top:1.4vh}
+  .flowc{background:var(--panel);border:1px solid var(--dbord);border-radius:14px;overflow:hidden}
+  .flowc .top{padding:.9vw;color:#fff;font-size:1.4vw;font-weight:800;text-align:center}
+  .flowc .bd{padding:1.1vw;font-size:1.05vw;line-height:1.45;color:#e6edf3}
+  .metrics{display:flex;gap:3vw;margin-top:2.2vh;align-items:center;flex-wrap:wrap}
+  .metric b{font-size:2.5vw;font-weight:800;display:block;line-height:1}
+  .metric span{font-size:1.05vw;color:var(--mut)}
+  .metric.note{font-size:1.05vw;color:#8b949e;max-width:24vw}
+
+  .facts{display:flex;flex-direction:column;gap:1.1vh;margin-top:1vh}
+  .fact{display:flex;gap:1.2vw;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-left-width:6px;border-radius:12px;padding:1vw 1.3vw}
+  .fact .k{font-size:1.05vw;font-weight:800;min-width:8vw}.fact .v{font-size:1.2vw}
+  .qrbox{background:#fff;border-radius:18px;padding:1.6vw 1.6vw 1.3vw;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+  .qrbox img{width:100%;max-width:15vw;height:auto;display:block;margin:0 auto}
+  .qrbox .u{margin-top:1vh;font-weight:800;font-size:1.15vw;color:var(--ink)}
+  .qrbox .s{font-size:.9vw;color:var(--grey)}
+
+  /* chrome */
+  .pbar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,#8250df,#58a6ff);z-index:40;transition:width .3s}
+  .langtog{position:fixed;top:12px;right:14px;z-index:50;display:flex;gap:4px;background:rgba(13,17,23,.85);backdrop-filter:blur(8px);border:1px solid var(--dbord);border-radius:999px;padding:4px}
+  .langtog button{background:transparent;border:none;color:var(--mut);font-size:12.5px;font-weight:800;cursor:pointer;padding:5px 12px;border-radius:999px}
+  .langtog button.on{background:var(--purple);color:#fff}
+  .nav{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;z-index:40;background:rgba(13,17,23,.85);backdrop-filter:blur(8px);border:1px solid var(--dbord);border-radius:999px;padding:6px 9px}
+  .nav button{background:transparent;border:none;color:#fff;font-size:14px;cursor:pointer;padding:5px 10px;border-radius:8px}.nav button:hover{background:rgba(255,255,255,.12)}
+  .nav .count{color:var(--mut);font-size:12.5px;font-weight:700;min-width:46px;text-align:center}
+  .dots{position:fixed;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:40}
+  .dots i{width:7px;height:7px;border-radius:50%;background:#30363d;cursor:pointer}.dots i.on{background:var(--purple);width:16px;border-radius:4px}
+  /* embedded live demo */
+  .slide.embed{padding:0;justify-content:stretch}
+  .embed .ebar{display:flex;align-items:center;gap:1vw;padding:1.5vh 2vw;background:var(--dark);color:#fff;border-bottom:1px solid var(--dbord)}
+  .embed .ebar .k{font-size:.95vw;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#a371f7}
+  .embed .ebar .t{font-size:1.3vw;font-weight:800}
+  .embed .ebar .hint{margin-left:auto;font-size:.85vw;color:#8b949e}
+  .embed .frame{flex:1;position:relative;background:#010409}
+  .embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  /* Copilot app "My Work" GUI mock */
+  .appmock{border-radius:12px;overflow:hidden;border:1px solid var(--dbord);box-shadow:0 24px 60px rgba(20,30,60,.4);background:#0d1117;color:#e6edf3}
+  .appmock .bar{display:flex;align-items:center;gap:.45vw;padding:.55vw .8vw;background:#161b22;border-bottom:1px solid var(--dbord)}
+  .appmock .bar i{width:.62vw;height:.62vw;border-radius:50%;display:block}
+  .appmock .bar .r{background:#ff5f56}.appmock .bar .y{background:#ffbd2e}.appmock .bar .g{background:#27c93f}
+  .appmock .bar .t{margin-left:.5vw;font-size:.76vw;color:#8b949e}
+  .appmock .body{display:grid;grid-template-columns:40% 60%}
+  .appmock .rail{border-right:1px solid var(--dbord);padding:.7vw .55vw}
+  .appmock .gh{font-size:.6vw;letter-spacing:.05em;text-transform:uppercase;color:#6e7681;font-weight:800;margin:.7vw .3vw .3vw}
+  .appmock .gh:first-child{margin-top:0}
+  .appmock .si{display:flex;align-items:center;gap:.4vw;padding:.38vw .4vw;border-radius:.4vw;font-size:.7vw;color:#c9d1d9;font-family:ui-monospace,Menlo,monospace}
+  .appmock .si.sel{background:#1f2937}
+  .appmock .si .d{width:.48vw;height:.48vw;border-radius:50%;flex:0 0 auto}
+  .appmock .d.g{background:#2da44e}.appmock .d.b{background:#58a6ff}.appmock .d.p{background:#a371f7}.appmock .d.o{background:#d29922}.appmock .d.gr{background:#6e7681}
+  .appmock .si .mt{margin-left:auto;font-size:.56vw;color:#6e7681;border:1px solid #30363d;border-radius:999px;padding:0 .42vw;font-family:-apple-system,Arial}
+  .appmock .main{padding:.8vw .85vw}
+  .appmock .mh{font-size:.88vw;font-weight:700;color:#fff;display:flex;align-items:center;gap:.45vw;flex-wrap:wrap;margin-bottom:.6vw}
+  .appmock .mh .n{color:#6e7681}
+  .appmock .badge{font-size:.58vw;font-weight:700;padding:.08vw .5vw;border-radius:999px;color:#3fb950;border:1px solid #238636;background:rgba(46,160,67,.12)}
+  .appmock .badge.p{color:#a371f7;border-color:#8957e5;background:rgba(137,87,229,.12)}
+  .appmock .plan{display:flex;flex-direction:column;gap:.38vw;margin-bottom:.6vw}
+  .appmock .pstep{display:flex;align-items:center;gap:.45vw;font-size:.7vw;color:#c9d1d9}
+  .appmock .ck{width:.85vw;height:.85vw;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:.5vw;font-weight:800}
+  .appmock .ck.ok{background:#2da44e;color:#fff}.appmock .ck.now{border:2px solid #d29922;color:#d29922}
+  .appmock .diff{border:1px solid var(--dbord);border-radius:.4vw;overflow:hidden;font-family:ui-monospace,Menlo,monospace;font-size:.64vw;margin-bottom:.6vw}
+  .appmock .diff .fn{background:#161b22;color:#8b949e;padding:.3vw .6vw;border-bottom:1px solid var(--dbord)}
+  .appmock .diff .ln{display:block;padding:.08vw .6vw;white-space:pre;overflow:hidden;text-overflow:ellipsis}
+  .appmock .diff .add{background:rgba(46,160,67,.14);color:#7ee787}.appmock .diff .del{background:rgba(248,81,73,.14);color:#ffa198}
+  .appmock .amerge{border:1px solid #238636;background:rgba(46,160,67,.1);border-radius:.4vw;padding:.45vw .6vw;font-size:.68vw;color:#3fb950;font-weight:700}
+</style>
+</head>
+<body>
+<div class="pbar" id="pbar"></div>
+<div class="langtog"><button id="nl" class="on">NL</button><button id="en">EN</button></div>
+<div class="dots" id="dots"></div>
+<div class="stage" id="stage">
+
+  <!-- 1 TITLE -->
+  <section class="slide dark on">
+    <div class="split wide-l">
+      <div>
+        <span class="kick" data-nl="GitHub · Product Update · okt 2026" data-en="GitHub · Product Update · Oct 2026">GitHub · Product Update · okt 2026</span>
+        <h1>GitHub Copilot app,<br><span style="background:linear-gradient(90deg,#a371f7,#58a6ff);-webkit-background-clip:text;background-clip:text;color:transparent">HydraFusion</span><br>&amp; Universe 2026</h1>
+        <p class="lead" data-nl="Wat de app is en wat je ermee kunt · hoe HydraFusion werkt · en hoe je Universe volgt." data-en="What the app is and what you can do with it · how HydraFusion works · and how to follow Universe.">Wat de app is en wat je ermee kunt · hoe HydraFusion werkt · en hoe je Universe volgt.</p>
+        <div style="margin-top:2.4vh;font-size:1.05vw;color:#8b949e">Justin Goertz · Account Executive, GitHub</div>
+      </div>
+      <div class="imgcard"><img src="img/copilot-hero.jpg" alt="GitHub Copilot"></div>
+    </div>
+    <div class="src">Beeld: github.blog</div>
+  </section>
+
+  <!-- 2 AGENDA -->
+  <section class="slide">
+    <span class="kick">Agenda</span>
+    <h2 data-nl="Drie onderwerpen" data-en="Three topics">Drie onderwerpen</h2>
+    <div class="caps">
+      <div class="agc"><div class="im"><img src="img/copilot-hero.jpg" alt="Copilot app"></div><div class="bd"><div class="n">01 · COPILOT APP</div><h3 data-nl="De agent-native desktop" data-en="The agent-native desktop">De agent-native desktop</h3><p data-nl="Wat het is, wat je ermee kunt en wat het oplevert." data-en="What it is, what you can do with it, and why it matters.">Wat het is, wat je ermee kunt en wat het oplevert.</p></div></div>
+      <div class="agc"><div class="im"><img src="img/hydra-ui.jpg" alt="HydraFusion"></div><div class="bd"><div class="n" style="color:var(--blue)">02 · HYDRAFUSION</div><h3 data-nl="Meerdere modellen per taak" data-en="Multiple models per task">Meerdere modellen per taak</h3><p data-nl="Hogere kwaliteit tegen lagere kosten." data-en="Higher quality at lower cost.">Hogere kwaliteit tegen lagere kosten.</p></div></div>
+      <div class="agc"><div class="im"><img src="img/universe-hero.png" alt="Universe 2026"></div><div class="bd"><div class="n" style="color:var(--green)">03 · UNIVERSE 2026</div><h3 data-nl="Veel nieuwe updates" data-en="Lots of new updates">Veel nieuwe updates</h3><p data-nl="En hoe je je aanmeldt om alles te volgen." data-en="And how to sign up to follow it all.">En hoe je je aanmeldt om alles te volgen.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 3 SECTION 1 -->
+  <section class="slide dark"><div class="sec-n" style="color:#a371f7">01</div><h1>GitHub Copilot app</h1><p class="lead" data-nl="De agent-native desktop-ervaring." data-en="The agent-native desktop experience.">De agent-native desktop-ervaring.</p></section>
+
+  <!-- 4 WHAT IS -->
+  <section class="slide">
+    <span class="kick" data-nl="Copilot app · wat is het?" data-en="Copilot app · what is it?">Copilot app · wat is het?</span>
+    <div class="split wide-r">
+      <div>
+        <h2 style="font-size:2.2vw" data-nl="Eén plek om je agents aan te sturen" data-en="One place to run your agents">Eén plek om je agents aan te sturen</h2>
+        <ul class="feat" style="font-size:1.3vw">
+          <li data-nl="Een losstaande desktop-app — geen plug-in in je editor." data-en="A standalone desktop app — not an editor plugin.">Een losstaande desktop-app — geen plug-in in je editor.</li>
+          <li data-nl="In één overzicht (My Work) zie je al je sessies, issues, pull requests en automations." data-en="One view (My Work) shows all your sessions, issues, pull requests and automations.">In één overzicht (My Work) zie je al je sessies, issues, pull requests en automations.</li>
+          <li data-nl="Elke sessie draait in een eigen, afgeschermde kopie van je code (git worktree)." data-en="Every session runs in its own isolated copy of your code (a git worktree).">Elke sessie draait in een eigen, afgeschermde kopie van je code (git worktree).</li>
+          <li data-nl="Beschikbaar voor Copilot Business en Enterprise." data-en="Available for Copilot Business and Enterprise.">Beschikbaar voor Copilot Business en Enterprise.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="appmock">
+          <div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">GitHub Copilot — My Work</span></div>
+          <div class="body">
+            <div class="rail">
+              <div class="gh">Sessions</div>
+              <div class="si sel"><span class="d g"></span>fix-auth-bug<span class="mt">Autopilot</span></div>
+              <div class="si"><span class="d b"></span>add-export-api<span class="mt">Interactive</span></div>
+              <div class="si"><span class="d p"></span>refactor-billing<span class="mt">Plan</span></div>
+              <div class="gh">Pull requests</div>
+              <div class="si"><span class="d o"></span>#482 · auth fix</div>
+              <div class="gh">Automations</div>
+              <div class="si"><span class="d gr"></span>Nightly deploy</div>
+            </div>
+            <div class="main">
+              <div class="mh">Fix auth token refresh <span class="n">#482</span><span class="badge">● Autopilot</span></div>
+              <div class="plan">
+                <div class="pstep"><span class="ck ok">✓</span>Reproduce with a failing test</div>
+                <div class="pstep"><span class="ck ok">✓</span>Patch the race condition</div>
+                <div class="pstep"><span class="ck now"></span>Run tests &amp; lint</div>
+              </div>
+              <div class="diff"><div class="fn">src/auth/token.ts</div><span class="ln del">- if (token.expired) return fetchToken()</span><span class="ln add">+ if (expired &amp;&amp; !refreshing) { ... }</span></div>
+              <div class="amerge">🔀 Agent Merge · CI → review → merge</div>
+            </div>
+          </div>
+        </div>
+        <div class="cap" data-nl="Illustratie van de Copilot app · My Work" data-en="Illustration of the Copilot app · My Work">Illustratie van de Copilot app · My Work</div>
+      </div>
+    </div>
+    <div class="src">Bron: github.blog — Copilot app: the agent-native desktop experience · docs.github.com</div>
+  </section>
+
+  <!-- 5 WHAT CAN YOU DO -->
+  <section class="slide">
+    <span class="kick" data-nl="Copilot app · wat kun je ermee?" data-en="Copilot app · what can you do?">Copilot app · wat kun je ermee?</span>
+    <h2 data-nl="De mogelijkheden" data-en="What it can do">De mogelijkheden</h2>
+    <div class="caps">
+      <div class="capc"><div class="ic" style="background:var(--purple)"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 16.5l9 5 9-5"/></svg></div><h3 data-nl="Agents parallel" data-en="Agents in parallel">Agents parallel</h3><p data-nl="Meerdere sessies tegelijk: bug fixen, feature bouwen én PR-feedback verwerken." data-en="Several sessions at once: fix a bug, build a feature and handle PR feedback.">Meerdere sessies tegelijk: bug fixen, feature bouwen én PR-feedback verwerken.</p></div>
+      <div class="capc"><div class="ic" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M4 21v-6M4 10V3M12 21v-8M12 8V3M20 21v-4M20 12V3"/><path d="M2 15h4M10 8h4M18 13h4"/></svg></div><h3 data-nl="Drie modi" data-en="Three modes">Drie modi</h3><p data-nl="Interactive (samen), Plan (jij keurt goed), Autopilot (zelfstandig)." data-en="Interactive (together), Plan (you approve), Autopilot (hands-off).">Interactive (samen), Plan (jij keurt goed), Autopilot (zelfstandig).</p></div>
+      <div class="capc"><div class="ic" style="background:var(--green)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><h3 data-nl="Canvases" data-en="Canvases">Canvases</h3><p data-nl="Plan, pull request, browser, terminal of dashboard — meekijken en bijsturen." data-en="Plan, pull request, browser, terminal or dashboard — inspect and steer.">Plan, pull request, browser, terminal of dashboard — meekijken en bijsturen.</p></div>
+      <div class="capc"><div class="ic" style="background:#ea580c"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3 data-nl="Sandboxes" data-en="Sandboxes">Sandboxes</h3><p data-nl="Lokaal of in de cloud — afgeschermd en met enterprise-policy." data-en="Local or in the cloud — bounded and with enterprise policy.">Lokaal of in de cloud — afgeschermd en met enterprise-policy.</p></div>
+      <div class="capc"><div class="ic" style="background:var(--purple)"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="9" r="2.4"/><path d="M6 8.4v7.2M15.6 9H12a6 6 0 0 0-6 6"/></svg></div><h3 data-nl="Agent Merge" data-en="Agent Merge">Agent Merge</h3><p data-nl="Bewaakt CI, volgt reviewers, fixt checks en merge't als jouw voorwaarden kloppen." data-en="Watches CI, tracks reviewers, fixes checks and merges when your conditions are met.">Bewaakt CI, volgt reviewers, fixt checks en merge't als jouw voorwaarden kloppen.</p></div>
+      <div class="capc"><div class="ic" style="background:var(--blue)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 8l4 4-4 4"/></svg></div><h3 data-nl="Van issue tot merge" data-en="From issue to merge">Van issue tot merge</h3><p data-nl="Start vanuit een issue of prompt → plan → code → pull request → merge." data-en="Start from an issue or prompt → plan → code → pull request → merge.">Start vanuit een issue of prompt → plan → code → pull request → merge.</p></div>
+    </div>
+    <div class="src">Bron: github.blog — Copilot app · docs.github.com</div>
+  </section>
+
+  <!-- 6 VALUE -->
+  <section class="slide">
+    <span class="kick" data-nl="Copilot app · wat levert het op?" data-en="Copilot app · why it matters">Copilot app · wat levert het op?</span>
+    <h2 data-nl="Waarde voor developers én de business" data-en="Value for developers and the business">Waarde voor developers én de business</h2>
+    <div class="aud">
+      <div class="audc dev">
+        <div class="ic" style="background:var(--purple)"><svg viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+        <div class="w" style="color:var(--purple)" data-nl="Voor developers" data-en="For developers">Voor developers</div>
+        <h3 data-nl="In je flow blijven" data-en="Stay in your flow">In je flow blijven</h3>
+        <ul>
+          <li data-nl="Niet meer springen tussen editor, terminal en browser" data-en="No more jumping between editor, terminal and browser">Niet meer springen tussen editor, terminal en browser</li>
+          <li data-nl="Routineklussen uitbesteden; zelf de lastige dingen doen" data-en="Hand off the routine work; keep the hard problems yourself">Routineklussen uitbesteden; zelf de lastige dingen doen</li>
+          <li data-nl="Altijd zien wat de agent deed en controleerde" data-en="Always see what the agent did and checked">Altijd zien wat de agent deed en controleerde</li>
+        </ul>
+      </div>
+      <div class="audc biz">
+        <div class="ic" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5l7-2 7 2v16"/><path d="M9 9h.01M9 13h.01M15 9h.01M15 13h.01"/></svg></div>
+        <div class="w" style="color:var(--blue)" data-nl="Voor de business" data-en="For the business">Voor de business</div>
+        <h3 data-nl="Meer grip, sneller resultaat" data-en="More control, faster results">Meer grip, sneller resultaat</h3>
+        <ul>
+          <li data-nl="Zet een hele groep agents in vanuit één plek" data-en="Put a whole fleet of agents to work from one place">Zet een hele groep agents in vanuit één plek</li>
+          <li data-nl="Grip via sandboxes, policy en een duidelijk spoor" data-en="Control through sandboxes, policy and a clear trail">Grip via sandboxes, policy en een duidelijk spoor</li>
+          <li data-nl="Van prompt tot merge, met Agent Merge erbij" data-en="From prompt to merge, with Agent Merge along the way">Van prompt tot merge, met Agent Merge erbij</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote" data-nl="&quot;Onze engineers sturen een hele groep agents aan en runnen meerdere projecten tegelijk — allemaal vanaf één plek.&quot; — David Jobling, Avanade" data-en="&quot;Our engineers dispatch a cohort of agents and manage multiple initiatives — all from one place.&quot; — David Jobling, Avanade">"Onze engineers sturen een hele groep agents aan en runnen meerdere projecten tegelijk — allemaal vanaf één plek." — David Jobling, Avanade</div>
+    <div class="src" data-nl="Bron: github.blog — Copilot app (algemeen beschikbaar sinds juni 2026)." data-en="Source: github.blog — Copilot app (generally available since June 2026).">Bron: github.blog — Copilot app (algemeen beschikbaar sinds juni 2026).</div>
+  </section>
+
+  <!-- 6c FOR NON-DEVS -->
+  <section class="slide">
+    <span class="kick" data-nl="Copilot app · ook voor niet-developers" data-en="Copilot app · also for non-developers">Copilot app · ook voor niet-developers</span>
+    <h2 data-nl="Je hoeft geen developer te zijn" data-en="You don't have to be a developer">Je hoeft geen developer te zijn</h2>
+    <p class="lead" data-nl="Je beschrijft in gewone taal wat je wilt — de AI-agent doet het technische werk. Jij stuurt en keurt goed, zonder zelf code te schrijven." data-en="You describe what you want in plain language — the AI agent does the technical work. You steer and approve, without writing code yourself.">Je beschrijft in gewone taal wat je wilt — de AI-agent doet het technische werk. Jij stuurt en keurt goed, zonder zelf code te schrijven.</p>
+    <div class="caps" style="grid-template-columns:repeat(4,1fr);margin-top:2vh">
+      <div class="capc"><div class="ic" style="background:#ea580c"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.5 1 1.2 1 2V17h6v-1.5c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></div><h3 data-nl="Een idee uitproberen" data-en="Try out an idea">Een idee uitproberen</h3><p data-nl="Snel een werkend prototype van je idee." data-en="A quick working prototype of your idea.">Snel een werkend prototype van je idee.</p></div>
+      <div class="capc"><div class="ic" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div><h3 data-nl="Saai werk automatiseren" data-en="Automate dull work">Saai werk automatiseren</h3><p data-nl="Herhalende klusjes door agents laten doen." data-en="Let agents handle repetitive tasks.">Herhalende klusjes door agents laten doen.</p></div>
+      <div class="capc"><div class="ic" style="background:var(--green)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div><h3 data-nl="Van spreadsheet naar tool" data-en="From spreadsheet to tool">Van spreadsheet naar tool</h3><p data-nl="Een lijst of proces omzetten in een handig tooltje." data-en="Turn a list or process into a handy little tool.">Een lijst of proces omzetten in een handig tooltje.</p></div>
+      <div class="capc"><div class="ic" style="background:var(--purple)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></div><h3 data-nl="Een kleine app of pagina" data-en="A small app or page">Een kleine app of pagina</h3><p data-nl="Laat een interne pagina of app voor je bouwen." data-en="Have an internal page or app built for you.">Laat een interne pagina of app voor je bouwen.</p></div>
+    </div>
+    <p class="lead" style="margin-top:1.8vh;font-size:1.25vw" data-nl="Van idee naar werkend resultaat — ook zonder diepe technische kennis." data-en="From idea to working result — even without deep technical skills.">Van idee naar werkend resultaat — ook zonder diepe technische kennis.</p>
+  </section>
+
+  <!-- 6b LIVE DEMO -->
+  <section class="slide embed">
+    <div class="ebar"><span class="k">Live demo</span><span class="t" data-nl="Werken in de Copilot app — chat, sub-sessies, issues, PR's &amp; merges" data-en="Working in the Copilot app — chat, sub-sessions, issues, PRs &amp; merges">Werken in de Copilot app — chat, sub-sessies, issues, PR's &amp; merges</span><span class="hint" data-nl="speelt automatisch af · klik erin om te bedienen" data-en="auto-plays · click inside to control">speelt automatisch af · klik erin om te bedienen</span></div>
+    <div class="frame"><iframe data-src="copilot-app.html" loading="lazy"></iframe></div>
+  </section>
+
+  <!-- 6d ADOPTION PHASES -->
+  <section class="slide">
+    <span class="kick" data-nl="Copilot app · de adoptiefasen" data-en="Copilot app · the adoption phases">Copilot app · de adoptiefasen</span>
+    <h2 data-nl="Vier fasen — en waar je developers zitten" data-en="Four phases — and where your developers sit">Vier fasen — en waar je developers zitten</h2>
+    <div class="phases" style="grid-template-columns:repeat(4,1fr)">
+      <div class="ph"><div class="num">0</div><h4 data-nl="Passief" data-en="Passive">Passief</h4><p data-nl="Gebruikt Copilot (nog) niet actief." data-en="Not actively using Copilot (yet).">Gebruikt Copilot (nog) niet actief.</p></div>
+      <div class="ph"><div class="num">1</div><h4 data-nl="Code-first" data-en="Code-first">Code-first</h4><p data-nl="Code-completions of agent-edits in de IDE." data-en="Code completions or agent edits in the IDE.">Code-completions of agent-edits in de IDE.</p></div>
+      <div class="ph"><div class="num">2</div><h4 data-nl="Agent-first" data-en="Agent-first">Agent-first</h4><p data-nl="Eén coding agent in gebruik: code review, CLI of de coding agent." data-en="One coding agent in use: code review, CLI or the coding agent.">Eén coding agent in gebruik: code review, CLI of de coding agent.</p></div>
+      <div class="ph hot"><div class="tag" data-nl="Copilot app" data-en="Copilot app">Copilot app</div><div class="num">3</div><h4 data-nl="Multi-agent" data-en="Multi-agent">Multi-agent</h4><p data-nl="Twee of meer agents, of de Copilot app, in gebruik." data-en="Two or more agents, or the Copilot app, in use.">Twee of meer agents, of de Copilot app, in gebruik.</p></div>
+    </div>
+    <div class="callout" data-nl="De <b>Copilot app</b> brengt developers direct naar fase 3 (multi-agent) — en elke stap omhoog vermenigvuldigt de output op dezelfde licenties." data-en="The <b>Copilot app</b> takes developers straight to phase 3 (multi-agent) — and each step up multiplies output on the same licenses.">De <b>Copilot app</b> brengt developers direct naar fase 3 (multi-agent) — en elke stap omhoog vermenigvuldigt de output op dezelfde licenties.</div>
+    <div class="src" data-nl="Fasemodel uit het GitHub Copilot Impact-dashboard: Passief → Code-first → Agent-first → Multi-agent." data-en="Phase model from the GitHub Copilot Impact dashboard: Passive → Code-first → Agent-first → Multi-agent.">Fasemodel uit het GitHub Copilot Impact-dashboard: Passief → Code-first → Agent-first → Multi-agent.</div>
+  </section>
+
+  <!-- 6e IMPACT DASHBOARD -->
+  <section class="slide">
+    <span class="kick" data-nl="Meet de impact · Copilot Impact-dashboard" data-en="Measure the impact · Copilot Impact dashboard">Meet de impact · Copilot Impact-dashboard</span>
+    <h2 data-nl="Elke fase omhoog = meer merged PR's, op dezelfde licenties" data-en="Each phase up = more merged PRs, on the same licenses">Elke fase omhoog = meer merged PR's, op dezelfde licenties</h2>
+    <div class="kpis">
+      <div class="kpi2" style="border-left-color:var(--green)"><div class="n" style="color:var(--green)">87%</div><div class="l" data-nl="engaged — actief met Copilot (fase 1-3)" data-en="engaged — actively using Copilot (phases 1-3)">engaged — actief met Copilot (fase 1-3)</div></div>
+      <div class="kpi2" style="border-left-color:var(--purple)"><div class="n" style="color:var(--purple)">61%</div><div class="l" data-nl="agent-first — werkt met agents (fase 2-3)" data-en="agent-first — working with agents (phases 2-3)">agent-first — werkt met agents (fase 2-3)</div></div>
+      <div class="kpi2" style="border-left-color:var(--blue)"><div class="n" style="color:var(--blue)">6,5×</div><div class="l" data-nl="meer merged PR's — agent-first vs. code-first" data-en="more merged PRs — agent-first vs. code-first">meer merged PR's — agent-first vs. code-first</div></div>
+      <div class="kpi2" style="border-left-color:#ea580c"><div class="n" style="color:#ea580c">39%</div><div class="l" data-nl="ruimte om te laten groeien (passief/fase 1)" data-en="room to grow (passive/phase 1)">ruimte om te laten groeien (passief/fase 1)</div></div>
+    </div>
+    <div class="cohorts">
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:3%;background:#9aa4b2"><span class="v">0,4</span></div></div><div class="nm" data-nl="Passief" data-en="Passive">Passief</div><div class="ds" data-nl="Copilot (nog) niet actief" data-en="Copilot not active yet">Copilot (nog) niet actief</div></div>
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:18%;background:#58a6ff"><span class="v">5,5</span></div></div><div class="nm" data-nl="Fase 1 · Code-first" data-en="Phase 1 · Code-first">Fase 1 · Code-first</div><div class="ds" data-nl="Completions/edits in de IDE" data-en="Completions/edits in the IDE">Completions/edits in de IDE</div></div>
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:66%;background:#1f6feb"><span class="v">20,0</span></div></div><div class="nm" data-nl="Fase 2 · Agent-first" data-en="Phase 2 · Agent-first">Fase 2 · Agent-first</div><div class="ds" data-nl="Eén agent in gebruik" data-en="One agent in use">Eén agent in gebruik</div></div>
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:100%;background:var(--purple)"><span class="v">30,3</span></div></div><div class="nm" data-nl="Fase 3 · Multi-agent" data-en="Phase 3 · Multi-agent">Fase 3 · Multi-agent</div><div class="ds" data-nl="Meerdere agents of de Copilot app" data-en="Multiple agents or the Copilot app">Meerdere agents of de Copilot app</div></div>
+    </div>
+    <div style="text-align:center;font-size:.82vw;color:var(--grey);margin-top:1.2vh" data-nl="gemergede pull requests per developer / maand" data-en="merged pull requests per developer / month">gemergede pull requests per developer / maand</div>
+    <div class="src" data-nl="Voorbeeld in de stijl van het GitHub Copilot Impact-dashboard · cijfers illustratief (observationeel, geen garantie)." data-en="Example in the style of the GitHub Copilot Impact dashboard · figures illustrative (observational, not a guarantee).">Voorbeeld in de stijl van het GitHub Copilot Impact-dashboard · cijfers illustratief (observationeel, geen garantie).</div>
+  </section>
+
+  <!-- 7 SECTION 2 -->
+  <section class="slide dark"><div class="sec-n" style="color:#58a6ff">02</div><h1>Project HydraFusion</h1><p class="lead" data-nl="Topkwaliteit door meerdere modellen slim te combineren." data-en="Frontier quality by smartly combining multiple models.">Topkwaliteit door meerdere modellen slim te combineren.</p></section>
+
+  <!-- 8 WHAT IS HYDRA -->
+  <section class="slide">
+    <span class="kick" style="color:var(--blue)" data-nl="HydraFusion · wat is het?" data-en="HydraFusion · what is it?">HydraFusion · wat is het?</span>
+    <div class="split wide-l">
+      <div>
+        <h2 style="font-size:2.1vw" data-nl="Een slimme regelaar die modellen combineert" data-en="A smart router that combines models">Een slimme regelaar die modellen combineert</h2>
+        <ul class="feat" style="font-size:1.25vw">
+          <li data-nl="Je kiest 'HydraFusion' als model — het maakt zelf een aanpak per taak." data-en="You pick 'HydraFusion' as the model — it builds its own plan per task.">Je kiest 'HydraFusion' als model — het maakt zelf een aanpak per taak.</li>
+          <li data-nl="Het combineert meerdere modellen van verschillende aanbieders in één keer." data-en="It combines multiple models from different providers in a single turn.">Het combineert meerdere modellen van verschillende aanbieders in één keer.</li>
+          <li data-nl="Het pakt de eenvoudigste aanpak die de kwaliteit tóch haalt." data-en="It takes the simplest approach that still clears the quality bar.">Het pakt de eenvoudigste aanpak die de kwaliteit tóch haalt.</li>
+          <li data-nl="Anders dan Auto (dat één model kiest): HydraFusion kiest een héle werkwijze." data-en="Unlike Auto (which picks one model): HydraFusion picks a whole workflow.">Anders dan Auto (dat één model kiest): HydraFusion kiest een héle werkwijze.</li>
+        </ul>
+      </div>
+      <div><div class="imgcard"><img src="img/hydra-arch.png" alt="HydraFusion architectuur"></div><div class="cap" data-nl="HydraFusion-architectuur. Beeld: github.blog" data-en="HydraFusion architecture. Image: github.blog">HydraFusion-architectuur. Beeld: github.blog</div></div>
+    </div>
+    <div class="src">Bron: github.blog — Project HydraFusion (sep 2026). Research preview.</div>
+  </section>
+
+  <!-- 9 THREE WORKFLOWS + RESULT -->
+  <section class="slide dark">
+    <span class="kick" style="color:#58a6ff" data-nl="HydraFusion · hoe het werkt &amp; wat het oplevert" data-en="HydraFusion · how it works &amp; what you get">HydraFusion · hoe het werkt &amp; wat het oplevert</span>
+    <h2 data-nl="Drie werkwijzen — automatisch gekozen" data-en="Three approaches — chosen automatically">Drie werkwijzen — automatisch gekozen</h2>
+    <div class="flow">
+      <div class="flowc"><div class="top" style="background:var(--green)">Single</div><div class="bd" data-nl="Eén model lost het meteen op. Snel en zuinig." data-en="One model solves it right away. Fast and efficient.">Eén model lost het meteen op. Snel en zuinig.</div></div>
+      <div class="flowc"><div class="top" style="background:var(--blue)">Cascade</div><div class="bd" data-nl="Goedkoop model eerst; niet goed genoeg → door naar een sterker model." data-en="Cheap model first; not good enough → escalate to a stronger model.">Goedkoop model eerst; niet goed genoeg → door naar een sterker model.</div></div>
+      <div class="flowc"><div class="top" style="background:var(--purple)">Critique</div><div class="bd" data-nl="Eén model maakt het, een ander checkt het, het eerste verbetert het." data-en="One model drafts it, another reviews it, the first one improves it.">Eén model maakt het, een ander checkt het, het eerste verbetert het.</div></div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><b style="color:#3fb950">+4,9 ppt</b><span data-nl="hogere taakkwaliteit" data-en="higher task quality">hogere taakkwaliteit</span></div>
+      <div class="metric"><b style="color:#a371f7">67%<span style="font-size:1.1vw"> </span></b><span data-nl="lagere kosten per taak" data-en="lower cost per task">lagere kosten per taak</span></div>
+      <div class="metric note" data-nl="…en jij hoeft geen model meer te kiezen." data-en="…and you no longer pick a model yourself.">…en jij hoeft geen model meer te kiezen.</div>
+    </div>
+    <div class="src" data-nl="Bron: GitHub — Project HydraFusion, TerminalBench 2.1 vs Claude Opus 5 (sep 2026). Research preview." data-en="Source: GitHub — Project HydraFusion, TerminalBench 2.1 vs Claude Opus 5 (Sep 2026). Research preview.">Bron: GitHub — Project HydraFusion, TerminalBench 2.1 vs Claude Opus 5 (sep 2026). Research preview.</div>
+  </section>
+
+  <!-- 10 SECTION 3 -->
+  <section class="slide dark"><div class="sec-n" style="color:#3fb950">03</div><h1>GitHub Universe 2026</h1><p class="lead" data-nl="Veel nieuwe updates — en hoe je ze volgt." data-en="Lots of new updates — and how to follow them.">Veel nieuwe updates — en hoe je ze volgt.</p></section>
+
+  <!-- 11 UNIVERSE + QR -->
+  <section class="slide dark" style="padding:0">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,17,23,.96),rgba(13,17,23,.55)),url('img/universe-hero.png') center/cover"></div>
+    <div style="position:relative;display:grid;grid-template-columns:1.3fr .7fr;gap:3vw;align-items:center;height:100%;padding:7vh 7vw">
+      <div>
+        <span class="kick" style="color:#3fb950">GitHub Universe 2026</span>
+        <h2 style="font-size:2.5vw;color:#fff" data-nl="Hét moment met veel nieuwe aankondigingen" data-en="The moment packed with new announcements">Hét moment met veel nieuwe aankondigingen</h2>
+        <div class="facts">
+          <div class="fact" style="border-left-color:#3fb950"><div class="k" style="color:#3fb950" data-nl="Wanneer" data-en="When">Wanneer</div><div class="v" data-nl="28–29 oktober 2026 · San Francisco + online" data-en="October 28–29, 2026 · San Francisco + online">28–29 oktober 2026 · San Francisco + online</div></div>
+          <div class="fact" style="border-left-color:#58a6ff"><div class="k" style="color:#58a6ff" data-nl="Updates" data-en="Updates">Updates</div><div class="v" data-nl="100+ sessies · grote aankondigingen in de dag-1 keynotes" data-en="100+ sessions · major announcements in the day-1 keynotes">100+ sessies · grote aankondigingen in de dag-1 keynotes</div></div>
+          <div class="fact" style="border-left-color:#a371f7"><div class="k" style="color:#a371f7" data-nl="Volgen" data-en="Follow">Volgen</div><div class="v" data-nl="Keynotes gratis live te streamen — meld je aan" data-en="Keynotes stream free live — just sign up">Keynotes gratis live te streamen — meld je aan</div></div>
+        </div>
+      </div>
+      <div class="qrbox">
+        <img src="img/universe-qr.svg" alt="QR githubuniverse.com">
+        <div class="u" data-nl="Scan &amp; meld je aan" data-en="Scan &amp; sign up">Scan &amp; meld je aan</div>
+        <div class="s">githubuniverse.com</div>
+      </div>
+    </div>
+    <div class="src" style="color:#8b949e" data-nl="Beeld &amp; bron: githubuniverse.com · github.blog. Exact aantal aankondigingen volgt tijdens de keynotes." data-en="Image &amp; source: githubuniverse.com · github.blog. Exact number of announcements lands during the keynotes.">Beeld &amp; bron: githubuniverse.com · github.blog.</div>
+  </section>
+
+  <!-- 12 SUMMARY -->
+  <section class="slide dark">
+    <span class="kick" data-nl="Samengevat" data-en="In summary">Samengevat</span>
+    <h2 data-nl="Drie dingen om te onthouden" data-en="Three things to remember">Drie dingen om te onthouden</h2>
+    <ul class="feat" style="font-size:1.45vw">
+      <li data-nl="Copilot app — één plek om AI-agents aan te sturen, van issue tot merge." data-en="Copilot app — one place to run AI agents, from issue to merge.">Copilot app — één plek om AI-agents aan te sturen, van issue tot merge.</li>
+      <li data-nl="HydraFusion — meerdere modellen per taak: +4,9 ppt kwaliteit bij 67% lagere kosten." data-en="HydraFusion — multiple models per task: +4.9 pts quality at 67% lower cost.">HydraFusion — meerdere modellen per taak: +4,9 ppt kwaliteit bij 67% lagere kosten.</li>
+      <li data-nl="Universe 2026 — veel updates op 28–29 okt; gratis online te volgen (scan de QR)." data-en="Universe 2026 — lots of updates on Oct 28–29; free to follow online (scan the QR).">Universe 2026 — veel updates op 28–29 okt; gratis online te volgen (scan de QR).</li>
+    </ul>
+    <p class="lead" style="margin-top:2.4vh" data-nl="Volgende stap: samen een Copilot/HydraFusion-demo op jullie eigen code." data-en="Next step: a Copilot/HydraFusion demo on your own code, together.">Volgende stap: samen een Copilot/HydraFusion-demo op jullie eigen code.</p>
+    <div class="src" style="color:#6e7681">Bronnen: github.blog · docs.github.com · githubuniverse.com</div>
+  </section>
+
+</div>
+<div class="nav"><button id="prev">‹</button><span class="count" id="count">1 / 13</span><button id="next">›</button><button id="fs" title="Fullscreen" style="font-size:16px">⛶</button></div>
+<script>
+  let LANG='nl';
+  const slides=[...document.querySelectorAll('.slide')];
+  const dw=document.getElementById('dots');
+  slides.forEach((_,i)=>{const d=document.createElement('i');d.onclick=()=>goto(i);dw.appendChild(d);});
+  const dots=[...dw.children]; let cur=0;
+  function applyLang(){
+    document.documentElement.lang=LANG;
+    document.querySelectorAll('[data-nl]').forEach(el=>{const v=el.getAttribute('data-'+LANG);if(v!=null)el.innerHTML=v;});
+    document.getElementById('nl').classList.toggle('on',LANG==='nl');
+    document.getElementById('en').classList.toggle('on',LANG==='en');
+  }
+  function goto(i){cur=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,x)=>s.classList.toggle('on',x===cur));dots.forEach((d,x)=>d.classList.toggle('on',x===cur));document.getElementById('count').textContent=(cur+1)+' / '+slides.length;document.getElementById('pbar').style.width=((cur+1)/slides.length*100)+'%';const f=slides[cur].querySelector('iframe[data-src]');if(f&&!f.getAttribute('src'))f.setAttribute('src',f.dataset.src);}
+  function next(){goto(cur+1)} function prev(){goto(cur-1)}
+  document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+  document.getElementById('nl').onclick=()=>{LANG='nl';applyLang();};
+  document.getElementById('en').onclick=()=>{LANG='en';applyLang();};
+  document.getElementById('fs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();};
+  document.getElementById('stage').addEventListener('click',e=>{if(e.target.closest('a,button,.dots,img,iframe,.embed'))return;next();});
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}else if(e.key==='Home')goto(0);else if(e.key==='End')goto(slides.length-1);else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
+  let sx=0;addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60){dx<0?next():prev();}},{passive:true});
+  applyLang();goto(0);
+</script>
+</body>
+</html>
