@@ -92,6 +92,7 @@
   .cohort .bar2 .v{position:absolute;top:-2.5vh;left:50%;transform:translateX(-50%);font-weight:800;font-size:1.3vw;white-space:nowrap;color:var(--ink)}
   .cohort .nm{font-weight:800;font-size:.95vw;margin-top:1vh}
   .cohort .ds{font-size:.76vw;color:var(--grey);line-height:1.3;margin-top:.2vh}
+  .cohort .du{font-size:.82vw;font-weight:800;color:var(--ink);margin-top:.5vh}
 
   .aud{display:grid;grid-template-columns:1fr 1fr;gap:1.6vw;margin-top:1.4vh}
   .audc{border-radius:16px;padding:1.9vw;border:1px solid var(--bord)}
@@ -273,25 +274,26 @@
       <div class="audc dev">
         <div class="ic" style="background:var(--purple)"><svg viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
         <div class="w" style="color:var(--purple)" data-nl="Voor developers" data-en="For developers">Voor developers</div>
-        <h3 data-nl="In je flow blijven" data-en="Stay in your flow">In je flow blijven</h3>
+        <h3 data-nl="Meer bouwen, minder schakelen" data-en="Build more, switch less">Meer bouwen, minder schakelen</h3>
         <ul>
-          <li data-nl="Niet meer springen tussen editor, terminal en browser" data-en="No more jumping between editor, terminal and browser">Niet meer springen tussen editor, terminal en browser</li>
-          <li data-nl="Routineklussen uitbesteden; zelf de lastige dingen doen" data-en="Hand off the routine work; keep the hard problems yourself">Routineklussen uitbesteden; zelf de lastige dingen doen</li>
-          <li data-nl="Altijd zien wat de agent deed en controleerde" data-en="Always see what the agent did and checked">Altijd zien wat de agent deed en controleerde</li>
+          <li data-nl="Delegeer écht werk aan agents — hele features en fixes, niet alleen routine" data-en="Delegate real work to agents — whole features and fixes, not just routine">Delegeer écht werk aan agents — hele features en fixes, niet alleen routine</li>
+          <li data-nl="Laat meerdere agents tegelijk werken terwijl jij reviewt en bijstuurt" data-en="Run several agents at once while you review and steer">Laat meerdere agents tegelijk werken terwijl jij reviewt en bijstuurt</li>
+          <li data-nl="Alles op één plek: plan, code, terminal en pull request" data-en="Everything in one place: plan, code, terminal and pull request">Alles op één plek: plan, code, terminal en pull request</li>
+          <li data-nl="Jij houdt de regie: zie elke stap, keur goed of grijp in" data-en="You stay in control: see every step, approve or step in">Jij houdt de regie: zie elke stap, keur goed of grijp in</li>
         </ul>
       </div>
       <div class="audc biz">
         <div class="ic" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V5l7-2 7 2v16"/><path d="M9 9h.01M9 13h.01M15 9h.01M15 13h.01"/></svg></div>
         <div class="w" style="color:var(--blue)" data-nl="Voor de business" data-en="For the business">Voor de business</div>
-        <h3 data-nl="Meer grip, sneller resultaat" data-en="More control, faster results">Meer grip, sneller resultaat</h3>
+        <h3 data-nl="Meer output, dezelfde teams" data-en="More output, the same teams">Meer output, dezelfde teams</h3>
         <ul>
-          <li data-nl="Zet een hele groep agents in vanuit één plek" data-en="Put a whole fleet of agents to work from one place">Zet een hele groep agents in vanuit één plek</li>
-          <li data-nl="Grip via sandboxes, policy en een duidelijk spoor" data-en="Control through sandboxes, policy and a clear trail">Grip via sandboxes, policy en een duidelijk spoor</li>
-          <li data-nl="Van prompt tot merge, met Agent Merge erbij" data-en="From prompt to merge, with Agent Merge along the way">Van prompt tot merge, met Agent Merge erbij</li>
+          <li data-nl="Meer werk parallel, zonder extra mensen aan te nemen" data-en="More work in parallel, without hiring more people">Meer werk parallel, zonder extra mensen aan te nemen</li>
+          <li data-nl="Kortere doorlooptijd: van idee tot merge met Agent Merge" data-en="Shorter lead time: from idea to merge with Agent Merge">Kortere doorlooptijd: van idee tot merge met Agent Merge</li>
+          <li data-nl="Grip &amp; compliance: sandboxes, policy en audit-trail — ook voor AVG/NIS2" data-en="Control &amp; compliance: sandboxes, policy and audit trail — for GDPR/NIS2 too">Grip &amp; compliance: sandboxes, policy en audit-trail — ook voor AVG/NIS2</li>
+          <li data-nl="Schaalt mee: van losse taken naar een vloot agents" data-en="Scales with you: from single tasks to a fleet of agents">Schaalt mee: van losse taken naar een vloot agents</li>
         </ul>
       </div>
     </div>
-    <div class="quote" data-nl="&quot;Onze engineers sturen een hele groep agents aan en runnen meerdere projecten tegelijk — allemaal vanaf één plek.&quot; — David Jobling, Avanade" data-en="&quot;Our engineers dispatch a cohort of agents and manage multiple initiatives — all from one place.&quot; — David Jobling, Avanade">"Onze engineers sturen een hele groep agents aan en runnen meerdere projecten tegelijk — allemaal vanaf één plek." — David Jobling, Avanade</div>
     <div class="src" data-nl="Bron: github.blog — Copilot app (algemeen beschikbaar sinds juni 2026)." data-en="Source: github.blog — Copilot app (generally available since June 2026).">Bron: github.blog — Copilot app (algemeen beschikbaar sinds juni 2026).</div>
   </section>
 
@@ -302,7 +304,7 @@
     <p class="lead" data-nl="Je beschrijft in gewone taal wat je wilt — de AI-agent doet het technische werk. Jij stuurt en keurt goed, zonder zelf code te schrijven." data-en="You describe what you want in plain language — the AI agent does the technical work. You steer and approve, without writing code yourself.">Je beschrijft in gewone taal wat je wilt — de AI-agent doet het technische werk. Jij stuurt en keurt goed, zonder zelf code te schrijven.</p>
     <div class="caps" style="grid-template-columns:repeat(4,1fr);margin-top:2vh">
       <div class="capc"><div class="ic" style="background:#ea580c"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.6.5 1 1.2 1 2V17h6v-1.5c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></div><h3 data-nl="Een idee uitproberen" data-en="Try out an idea">Een idee uitproberen</h3><p data-nl="Snel een werkend prototype van je idee." data-en="A quick working prototype of your idea.">Snel een werkend prototype van je idee.</p></div>
-      <div class="capc"><div class="ic" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div><h3 data-nl="Saai werk automatiseren" data-en="Automate dull work">Saai werk automatiseren</h3><p data-nl="Herhalende klusjes door agents laten doen." data-en="Let agents handle repetitive tasks.">Herhalende klusjes door agents laten doen.</p></div>
+      <div class="capc"><div class="ic" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></div><h3 data-nl="Werk laten uitvoeren" data-en="Get work done">Werk laten uitvoeren</h3><p data-nl="Laat agents hele taken en processen voor je uitvoeren." data-en="Let agents carry out whole tasks and processes for you.">Laat agents hele taken en processen voor je uitvoeren.</p></div>
       <div class="capc"><div class="ic" style="background:var(--green)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div><h3 data-nl="Van spreadsheet naar tool" data-en="From spreadsheet to tool">Van spreadsheet naar tool</h3><p data-nl="Een lijst of proces omzetten in een handig tooltje." data-en="Turn a list or process into a handy little tool.">Een lijst of proces omzetten in een handig tooltje.</p></div>
       <div class="capc"><div class="ic" style="background:var(--purple)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></div><h3 data-nl="Een kleine app of pagina" data-en="A small app or page">Een kleine app of pagina</h3><p data-nl="Laat een interne pagina of app voor je bouwen." data-en="Have an internal page or app built for you.">Laat een interne pagina of app voor je bouwen.</p></div>
     </div>
@@ -340,13 +342,13 @@
       <div class="kpi2" style="border-left-color:#ea580c"><div class="n" style="color:#ea580c">39%</div><div class="l" data-nl="ruimte om te laten groeien (passief/fase 1)" data-en="room to grow (passive/phase 1)">ruimte om te laten groeien (passief/fase 1)</div></div>
     </div>
     <div class="cohorts">
-      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:3%;background:#9aa4b2"><span class="v">0,4</span></div></div><div class="nm" data-nl="Passief" data-en="Passive">Passief</div><div class="ds" data-nl="Copilot (nog) niet actief" data-en="Copilot not active yet">Copilot (nog) niet actief</div></div>
-      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:18%;background:#58a6ff"><span class="v">5,5</span></div></div><div class="nm" data-nl="Fase 1 · Code-first" data-en="Phase 1 · Code-first">Fase 1 · Code-first</div><div class="ds" data-nl="Completions/edits in de IDE" data-en="Completions/edits in the IDE">Completions/edits in de IDE</div></div>
-      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:66%;background:#1f6feb"><span class="v">20,0</span></div></div><div class="nm" data-nl="Fase 2 · Agent-first" data-en="Phase 2 · Agent-first">Fase 2 · Agent-first</div><div class="ds" data-nl="Eén agent in gebruik" data-en="One agent in use">Eén agent in gebruik</div></div>
-      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:100%;background:var(--purple)"><span class="v">30,3</span></div></div><div class="nm" data-nl="Fase 3 · Multi-agent" data-en="Phase 3 · Multi-agent">Fase 3 · Multi-agent</div><div class="ds" data-nl="Meerdere agents of de Copilot app" data-en="Multiple agents or the Copilot app">Meerdere agents of de Copilot app</div></div>
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:3%;background:#9aa4b2"><span class="v">0,4</span></div></div><div class="nm" data-nl="Passief" data-en="Passive">Passief</div><div class="ds" data-nl="Copilot (nog) niet actief" data-en="Copilot not active yet">Copilot (nog) niet actief</div><div class="du">21 devs · 13%</div></div>
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:18%;background:#58a6ff"><span class="v">5,5</span></div></div><div class="nm" data-nl="Fase 1 · Code-first" data-en="Phase 1 · Code-first">Fase 1 · Code-first</div><div class="ds" data-nl="Completions/edits in de IDE" data-en="Completions/edits in the IDE">Completions/edits in de IDE</div><div class="du">42 devs · 26%</div></div>
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:66%;background:#1f6feb"><span class="v">20,0</span></div></div><div class="nm" data-nl="Fase 2 · Agent-first" data-en="Phase 2 · Agent-first">Fase 2 · Agent-first</div><div class="ds" data-nl="Eén agent in gebruik" data-en="One agent in use">Eén agent in gebruik</div><div class="du">12 devs · 7%</div></div>
+      <div class="cohort"><div class="barwrap"><div class="bar2" style="height:100%;background:var(--purple)"><span class="v">30,3</span></div></div><div class="nm" data-nl="Fase 3 · Multi-agent" data-en="Phase 3 · Multi-agent">Fase 3 · Multi-agent</div><div class="ds" data-nl="Meerdere agents of de Copilot app" data-en="Multiple agents or the Copilot app">Meerdere agents of de Copilot app</div><div class="du">87 devs · 54%</div></div>
     </div>
-    <div style="text-align:center;font-size:.82vw;color:var(--grey);margin-top:1.2vh" data-nl="gemergede pull requests per developer / maand" data-en="merged pull requests per developer / month">gemergede pull requests per developer / maand</div>
-    <div class="src" data-nl="Voorbeeld in de stijl van het GitHub Copilot Impact-dashboard · cijfers illustratief (observationeel, geen garantie)." data-en="Example in the style of the GitHub Copilot Impact dashboard · figures illustrative (observational, not a guarantee).">Voorbeeld in de stijl van het GitHub Copilot Impact-dashboard · cijfers illustratief (observationeel, geen garantie).</div>
+    <div style="text-align:center;font-size:.82vw;color:var(--grey);margin-top:1.2vh" data-nl="gemergede pull requests per developer / maand · 162 developers, 91 seats in de meetperiode" data-en="merged pull requests per developer / month · 162 developers, 91 seats in the measured window">gemergede pull requests per developer / maand · 162 developers, 91 seats in de meetperiode</div>
+    <div class="src" data-nl="Echte cijfers van een klant van ons — geanonimiseerd, uit het GitHub Copilot Impact-dashboard (rollend venster van 28 dagen). Ter illustratie." data-en="Real figures from one of our customers — anonymized, from the GitHub Copilot Impact dashboard (rolling 28-day window). For illustration.">Echte cijfers van een klant van ons — geanonimiseerd, uit het GitHub Copilot Impact-dashboard (rollend venster van 28 dagen). Ter illustratie.</div>
   </section>
 
   <!-- 7 SECTION 2 -->
